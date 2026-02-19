@@ -1082,73 +1082,6 @@
           box-shadow: 0 6px 20px rgba(255, 0, 0, 0.3);
         }
 
-        /* --- EFECTO SUTIL DEBAJO (FLECHA FANTASMA MEJORADA) --- */
-        .sapien-subtle-arrow {
-          /* 40% más grande: de 12px a 17px aprox */
-          width: 17px;
-          height: 17px;
-          margin-top: 22px;
-          /* 30% menos transparente: subimos de 0.12 a 0.42 de base */
-          border-right: 3px solid rgba(255, 255, 255, 0.29);
-          border-bottom: 3px solid rgba(255, 255, 255, 0.42);
-          /* Punta ovalada/redondeada */
-          border-bottom-right-radius: 4px;
-          transform: rotate(45deg);
-          animation: etherealFlow 4s infinite ease-in-out;
-          pointer-events: none;
-        }
-
-        /* Animación fluida: el pico de opacidad ahora es más sólido (0.55) */
-        @keyframes etherealFlow {
-          0% {
-            transform: translateY(0) rotate(45deg);
-            opacity: 0;
-          }
-          40% {
-            opacity: 0.55;
-          }
-          80% {
-            transform: translateY(18px) rotate(45deg);
-            opacity: 0;
-          }
-          100% {
-            opacity: 0;
-          }
-        }
-
-        /* ANIMACIONES DE SOPORTE */
-        @keyframes ghostShake {
-          0%,
-          94% {
-            transform: translate(0, 0);
-          }
-          95% {
-            transform: translate(0.5px, 0.5px);
-          }
-          96% {
-            transform: translate(-0.5px, -0.5px);
-          }
-          97% {
-            transform: translate(0.5px, -0.5px);
-          }
-          98% {
-            transform: translate(-0.5px, 0.5px);
-          }
-          100% {
-            transform: translate(0, 0);
-          }
-        }
-
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translate3d(0, 20px, 0);
-          }
-          to {
-            opacity: 1;
-            transform: translate3d(0, 0, 0);
-          }
-        }
       </style>
 
       <div class="sapien-cta-container">
@@ -1467,16 +1400,16 @@
           speeds = [];
 
         const config = {
-          particleCount: 150,
-          connectionDist: 180,
-          baseOpacity: 0.12,
-          speed: 0.6,
-          neuronColors: ["rgba(0, 255, 255,", "rgba(0, 255, 0,"],
-          meshColor: "rgba(255, 0, 0,",
-          flippedMeshColor: "rgba(0, 100, 229,",
-          flippedNeuronColor: "rgba(255, 0, 0,",
-          lightningInterval: 6000,
-        };
+  particleCount: 150,
+  connectionDist: 130, // Un poco más corto para que no haya tantas líneas
+  baseOpacity: 0.02,   // REDUCIDO: Antes 0.12. Esto hace la malla muy sutil.
+  speed: 0.5,          // Ligeramente más lento para mayor elegancia
+  neuronColors: ["rgba(0, 255, 255,", "rgba(0, 255, 150,"],
+  meshColor: "rgba(0, 255, 150,", // Cambiado a verde sutil para armonizar
+  flippedMeshColor: "rgba(0, 100, 229,",
+  flippedNeuronColor: "rgba(255, 50, 50,",
+  lightningInterval: 7000,
+};
 
         function init() {
           resize();
@@ -1532,27 +1465,26 @@
             let x = i * fontSize;
             let y = drops[i] * fontSize;
 
-            // --- SISTEMA DE CAPAS (PROFUNDIDAD SUTIL) ---
+            // --- SISTEMA DE CAPAS (MÁS TRANSPARENTE) ---
             if (i % 12 === 0) {
-              // CAPA LEJANA:
+              // CAPA LEJANA (Muy sutil)
               ctx.font = "300 " + (fontSize - 6) + "px monospace";
               ctx.fillStyle = isFlipped
-                ? "rgba(0, 220, 255, 0.1)"
-                : "rgba(0, 255, 100, 0.7)";
+                ? "rgba(0, 220, 255, 0.05)"
+                : "rgba(0, 255, 100, 0.15)"; 
             } else {
-              // CAPA CERCANA:
+              // CAPA CERCANA
               ctx.font = "500 " + (fontSize - 2) + "px 'Inter', monospace";
               ctx.fillStyle = isFlipped
-                ? "rgba(0, 220, 255, 0.3)"
-                : "rgba(0, 255, 100, 0.21)";
+                ? "rgba(0, 220, 255, 0.12)"
+                : "rgba(0, 255, 100, 0.08)"; // Muy suave para no saturar
             }
 
-            // --- DESTELLO "ESTRELLA FUGAZ" ---
-            if (Math.random() > 0.994) {
-              ctx.fillStyle = "#ffffff";
-              ctx.shadowBlur = 12;
+            // --- DESTELLO "ESTRELLA FUGAZ" (Menos invasivo) ---
+            if (Math.random() > 0.996) { // Menos frecuente
+              ctx.fillStyle = "rgba(255, 255, 255, 0.5)"; // Blanco translúcido
+              ctx.shadowBlur = 8;
               ctx.shadowColor = isFlipped ? "#00d4ff" : "#00ff78";
-              ctx.font = "900 " + fontSize + "px monospace";
             }
 
             ctx.fillText(text, x, y);
@@ -1679,20 +1611,30 @@
         }
 
         function animate() {
-          ctx.fillStyle = "rgba(5, 5, 5, 10)";
+          // 1. Fondo con rastro para la Matrix
+          ctx.fillStyle = "rgba(5, 5, 5, 0.18)"; 
           ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          // 2. Dibujamos la lluvia Matrix (ella necesita el rastro)
           drawMatrix();
+
+          // 3. Dibujamos las partículas
           particles.forEach((p) => {
             p.update();
             p.draw();
           });
+
+          // 4. La malla se dibuja AL FINAL
+          // Esto asegura que las líneas se vean nítidas pero muy tenues
           drawLines();
+
           lightningStrikes.forEach((strike, index) => {
             strike.update();
             strike.draw();
             if (strike.progress > strike.duration)
               lightningStrikes.splice(index, 1);
           });
+          
           requestAnimationFrame(animate);
         }
 
@@ -1706,6 +1648,7 @@
 
         window.addEventListener("resize", resize);
         init();
+        
       </script>
 
       <script>
@@ -1892,7 +1835,7 @@
             </div>
 
             <h2 class="animate-text">
-              <span class="price-highlight">396.000 COP</span> mensuales.
+              <span class="price-highlight">396.000 COP</span>
             </h2>
             <p>
               Todo incluido: Sitio web, Facebook Ads, SEO y Agente IA para
@@ -2573,7 +2516,7 @@
                 <span class="growth-label-v2">
                   <strong class="anuncios-red">+63 MILLONES FACTURADOS:</strong>
                   Ingeniería que escala ventas en tiempo real mientras otros
-                  solo publican. (En plena inflación 2025 - 2026)
+                  solo publican. (En plena inflacion 2025 - 2026)
                 </span>
               </div>
             </div>
@@ -7338,7 +7281,6 @@
                 <span class="v27-big-zero">0</span>
                 <span class="v27-small-label">PESOS</span>
               </div>
-              <span class="v27-big-free">SIN COSTOS EXTRA</span>
             </div>
 
             <a
