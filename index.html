@@ -928,7 +928,7 @@
       </style>
 
       <p class="main-subtitle">
-        Hacemos marketing efectivo, creamos tu página web Conectada a IA y gestionamos
+        Hacemos marketing efectivo, creamos tu página web y gestionamos
         <span class="sub-redes">redes</span> para llevar compradores directo a
         tu WhatsApp.
       </p>
@@ -1768,10 +1768,10 @@
 
         /* Flecha escalada a 77px (40% más grande) y opacidad al 0.45 (20% más sólida) */
         .scroll-arrow-wide {
-          width: 77px;
-          height: 77px;
-          border-right: 8px solid rgba(255, 255, 255, 0.45); /* Borde más grueso y opaco */
-          border-bottom: 8px solid rgba(255, 255, 255, 0.45);
+          width: 45px;
+          height: 45px;
+          border-right: 5px solid rgba(255, 255, 255, 0.05); /* Borde más grueso y opaco */
+          border-bottom: 5px solid rgba(255, 255, 255, 0.45);
           transform: rotate(45deg);
           border-radius: 6px 10px 15px 10px; /* Curva suavizada para el nuevo tamaño */
           animation: arrowGhostMove 2.5s infinite ease-in-out;
@@ -1779,17 +1779,7 @@
         }
 
         /* Efecto eco ajustado a la nueva escala */
-        .scroll-arrow-wide::after {
-          content: "";
-          position: absolute;
-          top: 12px;
-          left: 12px;
-          width: 100%;
-          height: 100%;
-          border-right: 4px solid rgba(255, 255, 255, 0.2);
-          border-bottom: 4px solid rgba(255, 255, 255, 0.2);
-          animation: arrowEcho 2.5s infinite ease-in-out;
-        }
+        
 
         @keyframes fadeInIndicator {
           to {
@@ -1800,15 +1790,15 @@
         @keyframes arrowGhostMove {
           0% {
             transform: translateY(0) rotate(45deg);
-            opacity: 0.3;
+            opacity: 0.05;
           } /* Opacidad base más alta */
           50% {
             transform: translateY(22px) rotate(45deg);
-            opacity: 0.9;
+            opacity: 0.90;
           } /* Punto máximo casi sólido */
           100% {
             transform: translateY(0) rotate(45deg);
-            opacity: 0.3;
+            opacity: 0.05;
           }
         }
 
