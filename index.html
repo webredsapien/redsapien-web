@@ -1345,7 +1345,7 @@
           });
         }
 
-  const textElement = document.getElementById("typewriter");
+        const textElement = document.getElementById("typewriter");
 // La frase con etiquetas HTML integradas
 const phrase = "¿Tu negocio no aparece en internet?, pierdes <strong class='v6-highlight'>6 de cada 10 clientes</strong>";
 let charIndex = 0;
@@ -1371,6 +1371,8 @@ function typeEffect() {
     textElement.style.animation = "none";
   }
 }
+
+
 
         // Inyectamos el estilo una sola vez
         if (!document.getElementById("v6-stat-style")) {
@@ -1427,7 +1429,6 @@ function typeEffect() {
           initMatrix();
           animate();
           typeEffect();
-          setInterval(triggerRandomLightning, config.lightningInterval);
           setInterval(() => {
             isFlipped = true;
             setTimeout(() => {
@@ -1637,15 +1638,7 @@ function typeEffect() {
           // 4. La malla se dibuja AL FINAL
           // Esto asegura que las líneas se vean nítidas pero muy tenues
           drawLines();
-
-          lightningStrikes.forEach((strike, index) => {
-            strike.update();
-            strike.draw();
-            if (strike.progress > strike.duration)
-              lightningStrikes.splice(index, 1);
-          });
-          
-          requestAnimationFrame(animate);
+requestAnimationFrame(animate);
         }
 
         canvas.addEventListener("click", (e) => {
