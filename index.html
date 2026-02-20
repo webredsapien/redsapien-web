@@ -1345,23 +1345,28 @@
           });
         }
 
-        const textElement = document.getElementById("typewriter");
+  const textElement = document.getElementById("typewriter");
+// La frase con etiquetas HTML integradas
 const phrase = "¿Tu negocio no aparece en internet?, pierdes <strong class='v6-highlight'>6 de cada 10 clientes</strong>";
 let charIndex = 0;
 
 function typeEffect() {
   if (textElement && charIndex < phrase.length) {
+    // Lógica para saltar etiquetas HTML y que no se vean los símbolos < > mientras escribe
     if (phrase.charAt(charIndex) === "<") {
       charIndex = phrase.indexOf(">", charIndex) + 1;
     } else {
       charIndex++;
     }
+    
     textElement.innerHTML = phrase.substring(0, charIndex);
     
-    // CAMBIO AQUÍ: De 65ms a 85ms para que sea un 30% más lento
-    setTimeout(typeEffect, 85); 
+    // AJUSTE DE VELOCIDAD: 
+    // 65ms era normal, 85ms era rápido, 110ms es un 30% más lento y elegante.
+    setTimeout(typeEffect, 129); 
     
   } else if (textElement) {
+    // Efecto final: quita el cursor parpadeante al terminar
     textElement.style.borderRight = "none";
     textElement.style.animation = "none";
   }
