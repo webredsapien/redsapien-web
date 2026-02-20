@@ -1346,41 +1346,26 @@
         }
 
         const textElement = document.getElementById("typewriter");
-        // La frase con la pregunta integrada y el impacto estadístico
-        const phrase =
-          "¿Tu negocio no aparece en internet?, pierdes <strong class='v6-highlight'>6 de cada 10 clientes</strong>";
-        let charIndex = 0;
+const phrase = "¿Tu negocio no aparece en internet?, pierdes <strong class='v6-highlight'>6 de cada 10 clientes</strong>";
+let charIndex = 0;
 
-        function typeEffect() {
-          if (charIndex <= phrase.length) {
-            // Usamos innerHTML para que el navegador renderice el <strong> correctamente
-            textElement.innerHTML = phrase.substring(0, charIndex);
-            charIndex++;
-            setTimeout(typeEffect, 50); // Ajusta la velocidad aquí
-          }
-        }
-
-        typeEffect();
-
-        function typeEffect() {
-          if (textElement && charIndex < phrase.length) {
-            // Si detectamos el inicio de una etiqueta HTML, buscamos dónde termina
-            if (phrase.charAt(charIndex) === "<") {
-              charIndex = phrase.indexOf(">", charIndex) + 1;
-            } else {
-              charIndex++;
-            }
-
-            // Renderizamos la porción de la frase
-            textElement.innerHTML = phrase.substring(0, charIndex);
-
-            // Mantenemos tus 99ms originales
-            setTimeout(typeEffect, 169);
-          } else if (textElement) {
-            textElement.style.borderRight = "none";
-            textElement.style.animation = "none";
-          }
-        }
+function typeEffect() {
+  if (textElement && charIndex < phrase.length) {
+    if (phrase.charAt(charIndex) === "<") {
+      charIndex = phrase.indexOf(">", charIndex) + 1;
+    } else {
+      charIndex++;
+    }
+    textElement.innerHTML = phrase.substring(0, charIndex);
+    
+    // CAMBIO AQUÍ: De 65ms a 85ms para que sea un 30% más lento
+    setTimeout(typeEffect, 85); 
+    
+  } else if (textElement) {
+    textElement.style.borderRight = "none";
+    textElement.style.animation = "none";
+  }
+}
 
         // Inyectamos el estilo una sola vez
         if (!document.getElementById("v6-stat-style")) {
@@ -10290,9 +10275,7 @@
           </div>
         </div>
       </div>
-    </footer>
-
-    <script src="//unpkg.com/globe.gl"></script>
+ <script src="//unpkg.com/globe.gl"></script>
 
     <style>
       :root {
@@ -10555,105 +10538,124 @@
     </style>
 
     <script>
-      // 1. RELOJ
+  // 1. RELOJ (Hora de Colombia)
+  setInterval(() => {
+    const clockEl = document.getElementById("rs-f-clock");
+    if (clockEl) {
+      clockEl.innerText = new Date().toLocaleTimeString("es-CO");
+    }
+  }, 1000);
 
-      setInterval(() => {
-        document.getElementById("rs-f-clock").innerText =
-          new Date().toLocaleTimeString("es-CO");
-      }, 1000);
+  // 2. CONFIGURACIÓN DEL MOTOR GLOBO
+  const globeContainer = document.getElementById("rs-f-globe-container");
+  const myWorld = Globe()(globeContainer)
+    .backgroundImageUrl("//unpkg.com/three-globe/example/img/night-sky.png")
+    .globeImageUrl("//unpkg.com/three-globe/example/img/earth-night.jpg")
+    .bumpImageUrl("//unpkg.com/three-globe/example/img/earth-topology.png")
+    .backgroundColor("rgba(0,0,0,0)")
+    .showAtmosphere(true)
+    .atmosphereColor("#ff0000");
 
-      // 2. MOTOR GLOBO
+  // 3. ECOSISTEMA DIGITAL (Solo las 4 redes solicitadas)
+  const digitalEcosystem = [
+    { lat: 25, lng: -40, alt: 0.5, text: "🌐 GOOGLE", color: "#4285F4" },
+    { lat: -15, lng: -60, alt: 0.6, text: "🔵 FACEBOOK", color: "#1877F2" },
+    { lat: 40, lng: -100, alt: 0.4, text: "🔗 PAGINA WEB", color: "#ffffff" },
+    { lat: -30, lng: -20, alt: 0.7, text: "🤖 ANTONELLA IA", color: "#00ffcc" }
+  ];
 
-      const globeContainer = document.getElementById("rs-f-globe-container");
+  // Renderizar las etiquetas
+  myWorld.labelsData([
+    ...digitalEcosystem,
+    // COLOMBIA: Ajustada un poco más al sur-este (2.5, -72.0) para no tapar a Manizales y con más altura
+    { lat: 2.5, lng: -72.0, text: "COLOMBIA", size: 3, color: "rgba(255,255,255,0.5)", alt: 0.05 }, 
+    { lat: 5.0689, lng: -75.5174, text: "MANIZALES", size: 2.2, color: "#ff0000", alt: 0.01 }
+  ])
+  .labelSize(d => d.size || 1.5)
+  .labelColor(d => d.color || "#ffffff")
+  .labelText(d => d.text)
+  .labelDotRadius(0.6)
+  .labelAltitude(d => d.alt || 0.01);
 
-      const myWorld = Globe()(globeContainer)
+  // Anillo de pulso en Manizales (Ubicación Geográfica Exacta)
+  myWorld.ringsData([{ lat: 5.0689, lng: -75.5174 }])
+    .ringColor(() => "#ff0000")
+    .ringMaxRadius(4)
+    .ringPropagationSpeed(2);
 
-        .backgroundImageUrl("//unpkg.com/three-globe/example/img/night-sky.png")
+  // 4. SATÉLITE RED SAPIEN
+  const satData = [{ lat: 15, lng: 0 }];
+  myWorld.htmlElementsData(satData)
+    .htmlElement(d => {
+      const el = document.createElement('div');
+      el.innerHTML = `<div style="display: flex; align-items: center; gap: 8px; background: rgba(255,0,0,0.1); padding: 5px 10px; border: 1px solid #ff0000; border-radius: 20px; backdrop-filter: blur(4px);">
+                        <span style="color: #ff0000; font-weight: 900;">🔴</span>
+                        <span style="color: #fff; font-family: monospace; font-size: 11px; font-weight: 900; letter-spacing: 1px; text-shadow: 0 0 8px #ff0000;">RED SAPIEN</span>
+                      </div>`;
+      el.style.pointerEvents = 'none';
+      return el;
+    });
 
-        .globeImageUrl("//unpkg.com/three-globe/example/img/earth-night.jpg")
+  // Animación del Satélite
+  setInterval(() => {
+    satData[0].lng -= 0.5;
+    if(satData[0].lng < -180) satData[0].lng = 180;
+    myWorld.htmlElementsData(satData);
+  }, 30);
 
-        .bumpImageUrl("//unpkg.com/three-globe/example/img/earth-topology.png")
+  // 5. CONTROLES
+  myWorld.controls().autoRotate = false;
+  myWorld.controls().enableZoom = true;
+  myWorld.controls().enablePan = true;
 
-        .backgroundColor("rgba(0,0,0,0)")
+  const handleResize = () => {
+    if (globeContainer) {
+      myWorld.width(globeContainer.offsetWidth);
+      myWorld.height(globeContainer.offsetHeight);
+    }
+  };
+  window.addEventListener("resize", handleResize);
+  handleResize();
 
-        .showAtmosphere(true)
+  // 6. SECUENCIA CINEMATOGRÁFICA AUTOMÁTICA
+  let trigger = false;
+  const rootElement = document.getElementById("rs-f-root");
 
-        .atmosphereColor("#ff0000")
+  if (rootElement) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !trigger) {
+          
+          // FASE 1: Inicio
+          myWorld.pointOfView({ lat: 20, lng: -40, altitude: 4.5 }, 0);
 
-        .atmosphereDaylightAlpha(0.15);
+          setTimeout(() => {
+            // FASE 2: Zoom a Manizales
+            myWorld.pointOfView(
+              { lat: 5.0689, lng: -75.5174, altitude: 0.4 }, 
+              5000 
+            );
+          }, 800);
 
-      // 3. FOCO EN MANIZALES, COLOMBIA (AMÉRICA)
+          setTimeout(() => {
+            // FASE 3: Vista general y rotación
+            myWorld.pointOfView(
+              { lat: 15, lng: -75.5174, altitude: 2.2 }, 
+              4000 
+            );
+            
+            myWorld.controls().autoRotate = true;
+            myWorld.controls().autoRotateSpeed = 0.5; 
+          }, 6500);
 
-      const poi = [{ lat: 5.0689, lng: -75.5174, text: "COLOMBIA" }];
-
-      myWorld
-        .labelsData(poi)
-
-        .labelSize(3.5)
-
-        .labelColor(() => "#ff0000")
-
-        .labelText((d) => d.text)
-
-        .labelResolution(3);
-
-      myWorld
-        .ringsData(poi)
-
-        .ringColor(() => "#ff0000")
-
-        .ringMaxRadius(3)
-
-        .ringPropagationSpeed(2);
-
-      // 4. CONFIGURACIÓN VISUAL (SIN INTERACCIÓN)
-
-      myWorld.controls().autoRotate = true;
-
-      myWorld.controls().autoRotateSpeed = 0.4;
-
-      myWorld.controls().enableZoom = false;
-
-      myWorld.controls().enablePan = false;
-
-      const handleResize = () => {
-        myWorld.width(globeContainer.offsetWidth);
-
-        myWorld.height(globeContainer.offsetHeight);
-      };
-
-      window.addEventListener("resize", handleResize);
-
-      handleResize();
-
-      // 5. ANIMACIÓN CINEMÁTICA AL NODO COLOMBIA
-
-      let trigger = false;
-
-      const observer = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting && !trigger) {
-            // Inicia mostrando América desde el espacio
-
-            myWorld.pointOfView({ lat: 10, lng: -80, altitude: 3.5 }, 0);
-
-            setTimeout(() => {
-              // Aterriza precisamente en Manizales/Colombia
-
-              myWorld.pointOfView(
-                { lat: 5.0689, lng: -75.5174, altitude: 2.2 },
-                4000,
-              );
-            }, 500);
-
-            trigger = true;
-          }
-        },
-        { threshold: 0.3 },
-      );
-
-      observer.observe(document.getElementById("rs-f-root"));
-    </script>
+          trigger = true;
+        }
+      },
+      { threshold: 0.4 }
+    );
+    observer.observe(rootElement);
+  }
+</script>
 
     <div id="v8-sapien-wa" class="v8-wa-hidden">
       <a
@@ -10777,5 +10779,9 @@
         });
       })();
     </script>
+
+    </footer>
+
+   
   </body>
 </html>
