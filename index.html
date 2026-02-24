@@ -1329,57 +1329,40 @@
       <canvas id="networkCanvas"></canvas>
 
       <script>
-        // Función para el acordeón con centrado de vista
-        function toggleCard(id) {
-          const cards = document.querySelectorAll(".niche-card");
-          cards.forEach((card) => {
-            if (card.id === id) {
-              const isActive = card.classList.toggle("active");
-              if (isActive) {
-                setTimeout(() => {
-                  card.scrollIntoView({ behavior: "smooth", block: "center" });
-                }, 300);
-              }
-            } else {
-              card.classList.remove("active");
-            }
-          });
+  // ============================================
+  // ACORDEÓN (sin cambios)
+  // ============================================
+  function toggleCard(id) {
+    const cards = document.querySelectorAll(".niche-card");
+    cards.forEach((card) => {
+      if (card.id === id) {
+        const isActive = card.classList.toggle("active");
+        if (isActive) {
+          setTimeout(() => {
+            card.scrollIntoView({ behavior: "smooth", block: "center" });
+          }, 300);
         }
-
-        const textElement = document.getElementById("typewriter");
-// La frase con etiquetas HTML integradas
-const phrase = "¿Tu negocio no aparece en internet?, pierdes <strong class='v6-highlight'>6 de cada 10 clientes</strong>";
-let charIndex = 0;
-
-function typeEffect() {
-  if (textElement && charIndex < phrase.length) {
-    // Lógica para saltar etiquetas HTML y que no se vean los símbolos < > mientras escribe
-    if (phrase.charAt(charIndex) === "<") {
-      charIndex = phrase.indexOf(">", charIndex) + 1;
-    } else {
-      charIndex++;
-    }
-    
-    textElement.innerHTML = phrase.substring(0, charIndex);
-    
-    // AJUSTE DE VELOCIDAD: 
-    // 65ms era normal, 85ms era rápido, 110ms es un 30% más lento y elegante.
-    setTimeout(typeEffect, 125); 
-    
-  } else if (textElement) {
-    // Efecto final: quita el cursor parpadeante al terminar
-    textElement.style.borderRight = "none";
-    textElement.style.animation = "none";
+      } else {
+        card.classList.remove("active");
+      }
+    });
   }
-}
 
+  // ============================================
+  // MÁQUINA DE ESCRIBIR (CORREGIDA - SIN CAMBIAR ESTRUCTURA)
+  // ============================================
+  (function() {
+    const textElement = document.getElementById("typewriter");
+    if (!textElement) return;
 
-
-        // Inyectamos el estilo una sola vez
-        if (!document.getElementById("v6-stat-style")) {
-          const style = document.createElement("style");
-          style.id = "v6-stat-style";
-          style.innerHTML = `
+    // Tu frase original (sin cambios)
+    const phrase = "¿Tu negocio no aparece en internet?, pierdes <strong class='v6-highlight'>6 de cada 10 clientes</strong>";
+    
+    // Inyectar estilo (tu código original)
+    if (!document.getElementById("v6-stat-style")) {
+      const style = document.createElement("style");
+      style.id = "v6-stat-style";
+      style.innerHTML = `
         .v6-highlight {
             color: #ff0000;
             font-weight: 900;
@@ -1392,269 +1375,255 @@ function typeEffect() {
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
         }
-    `;
-          document.head.appendChild(style);
+      `;
+      document.head.appendChild(style);
+    }
+
+    // Variables para la animación
+    let charIndex = 0;
+    
+    // Tu función typeEffect original pero optimizada
+    function typeEffect() {
+      if (textElement && charIndex < phrase.length) {
+        // Lógica para saltar etiquetas HTML
+        if (phrase.charAt(charIndex) === "<") {
+          charIndex = phrase.indexOf(">", charIndex) + 1;
+        } else {
+          charIndex++;
         }
-
-        typeEffect();
-
-        // --- MOTOR DE PARTÍCULAS Y MATRIX (Mantenido intacto) ---
-        const canvas = document.getElementById("networkCanvas");
-        const ctx = canvas.getContext("2d");
-        let particles = [],
-          lightningStrikes = [],
-          isFlipped = false;
-
-        const charSet =
-          "RESTAURANTESSPA SERVICIOSPROFESIONALESMARKETINGOPENSOURCESEOVENTASMARCANEGOCIOSOCIALMEDIACRMWEBDOMINIOREPUTACIONCODIGO0123456789ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ";
-        const fontSize = 16;
-        let columns,
-          drops = [],
-          speeds = [];
-
-        const config = {
-  particleCount: 150,
-  connectionDist: 130, // Un poco más corto para que no haya tantas líneas
-  baseOpacity: 0.01,   // REDUCIDO: Antes 0.12. Esto hace la malla muy sutil.
-  speed: 0.5,          // Ligeramente más lento para mayor elegancia
-  neuronColors: ["rgba(0, 255, 255,", "rgba(0, 255, 150,"],
-  meshColor: "rgba(0, 255, 150,", // Cambiado a verde sutil para armonizar
-  flippedMeshColor: "rgba(0, 100, 229,",
-  flippedNeuronColor: "rgba(255, 50, 50,",
-  lightningInterval: 7000,
-};
-
-        function init() {
-          resize();
-          createParticles();
-          initMatrix();
-          animate();
-          typeEffect();
-          setInterval(() => {
-            isFlipped = true;
-            setTimeout(() => {
-              isFlipped = false;
-            }, 3000);
-          }, 12000);
-        }
-
-        // --- AGREGA ESTA VARIABLE Y EL TIMEOUT AL INICIO DE TU SCRIPT (Junto a tus otras variables let) ---
-        let matrixActive = false;
-
-        // Esto activa la lluvia exactamente a los 3 segundos (3000 ms)
-        setTimeout(() => {
-          matrixActive = true;
-        }, 3000);
-
-        // --- REEMPLAZA TUS FUNCIONES initMatrix Y drawMatrix POR ESTAS ---
-
-        function initMatrix() {
-          columns = Math.floor(canvas.width / fontSize);
-          drops = [];
-          speeds = [];
-          for (let i = 0; i < columns; i++) {
-            // AJUSTE: Empiezan más cerca del borde (-50) para entrar rápido
-            drops[i] = Math.random() * -50;
-
-            // VELOCIDAD BASE: Aumentada x10 (antes 0.06, ahora 0.6 + base)
-            // Esto asegura que bajen rápido en cualquier dispositivo
-            speeds[i] = Math.random() * 0.6 + 0.4;
-          }
-        }
-
-        function drawMatrix() {
-          // LÓGICA DE RETRASO: Si no han pasado 3 segundos (o 2 si lo cambiaste), no dibuja nada
-          if (!matrixActive) return;
-
-          for (let i = 0; i < drops.length; i++) {
-            // --- TRIPLE DE SÍMBOLOS ---
-            // Antes: (i % 6 !== 0) -> 1 columna de cada 6.
-            // Ahora: (i % 2 !== 0) -> 1 columna de cada 2.
-            // Esto triplica exactamente la cantidad de lluvia de datos en pantalla.
-            if (i % 2 !== 0) continue;
-
-            const text = charSet[Math.floor(Math.random() * charSet.length)];
-            let x = i * fontSize;
-            let y = drops[i] * fontSize;
-
-            // --- SISTEMA DE CAPAS (MÁS TRANSPARENTE) ---
-            if (i % 12 === 0) {
-              // CAPA LEJANA (Muy sutil)
-              ctx.font = "300 " + (fontSize - 6) + "px monospace";
-              ctx.fillStyle = isFlipped
-                ? "rgba(0, 220, 255, 0.05)"
-                : "rgba(0, 255, 100, 0.15)"; 
-            } else {
-              // CAPA CERCANA
-              ctx.font = "500 " + (fontSize - 2) + "px 'Inter', monospace";
-              ctx.fillStyle = isFlipped
-                ? "rgba(0, 220, 255, 0.12)"
-                : "rgba(0, 255, 100, 0.08)"; // Muy suave para no saturar
-            }
-
-            // --- DESTELLO "ESTRELLA FUGAZ" (Menos invasivo) ---
-            if (Math.random() > 0.996) { // Menos frecuente
-              ctx.fillStyle = "rgba(255, 255, 255, 0.5)"; // Blanco translúcido
-              ctx.shadowBlur = 8;
-              ctx.shadowColor = isFlipped ? "#00d4ff" : "#00ff78";
-            }
-
-            ctx.fillText(text, x, y);
-
-            // Limpieza de sombras
-            ctx.shadowBlur = 0;
-
-            // Reseteo orgánico
-            if (y > canvas.height && Math.random() > 0.975) {
-              drops[i] = 0;
-            }
-
-            // --- VELOCIDAD DIFERENCIADA ---
-            // Se mantiene tu ajuste para un descenso fluido y elegante.
-            let speedMult = i % 12 === 0 ? 0.25 : 0.13;
-            drops[i] += speeds[i] * speedMult;
-          }
-        }
-        function resize() {
-          canvas.width = window.innerWidth;
-          canvas.height = window.innerHeight;
-          config.particleCount = Math.floor(
-            (canvas.width * canvas.height) / 8500,
-          );
-          initMatrix();
-        }
-
-        class Particle {
-          constructor() {
-            this.reset();
-            this.originalRadius = Math.random() * 1.2 + 0.5;
-          }
-          reset() {
-            this.x = Math.random() * canvas.width;
-            this.y = Math.random() * canvas.height;
-            this.vx = (Math.random() - 0.5) * config.speed;
-            this.vy = (Math.random() - 0.5) * config.speed;
-            this.radius = this.originalRadius;
-            this.color =
-              config.neuronColors[
-                Math.floor(Math.random() * config.neuronColors.length)
-              ];
-          }
-          update() {
-            this.x += this.vx;
-            this.y += this.vy;
-            if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-            if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-          }
-          draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            let colorToDraw = isFlipped
-              ? config.flippedNeuronColor
-              : this.color;
-            let finalOpacity = isFlipped
-              ? config.baseOpacity + 0.25
-              : config.baseOpacity + 0.06;
-            ctx.fillStyle = colorToDraw + finalOpacity + ")";
-            ctx.fill();
-          }
-        }
-
-        function createParticles() {
-          particles = [];
-          for (let i = 0; i < config.particleCount; i++)
-            particles.push(new Particle());
-        }
-
-        function drawLines() {
-          for (let i = 0; i < particles.length; i++) {
-            for (let j = i + 1; j < particles.length; j++) {
-              const dx = particles[i].x - particles[j].x;
-              const dy = particles[i].y - particles[j].y;
-              const dist = Math.sqrt(dx * dx + dy * dy);
-              if (dist < config.connectionDist) {
-                const opacity =
-                  (1 - dist / config.connectionDist) * config.baseOpacity;
-                ctx.beginPath();
-                ctx.strokeStyle =
-                  (isFlipped ? config.flippedMeshColor : config.meshColor) +
-                  opacity +
-                  ")";
-                ctx.lineWidth = 0.4;
-                ctx.moveTo(particles[i].x, particles[i].y);
-                ctx.lineTo(particles[j].x, particles[j].y);
-                ctx.stroke();
-              }
-            }
-          }
-        }
-
-        class LightningStrike {
-          constructor(start, end) {
-            this.start = { x: start.x, y: start.y };
-            this.end = { x: end.x, y: end.y };
-            this.progress = 0;
-            this.duration = 45;
-          }
-          update() {
-            this.progress++;
-          }
-          draw() {
-            if (this.progress > this.duration) return;
-            const t = this.progress / this.duration;
-            ctx.beginPath();
-            ctx.strokeStyle = `rgba(0, 255, 255, ${Math.sin(t * Math.PI) * 0.12})`;
-            ctx.lineWidth = 0.8;
-            ctx.moveTo(this.start.x, this.start.y);
-            ctx.lineTo(
-              this.start.x + (this.end.x - this.start.x) * t,
-              this.start.y + (this.end.y - this.start.y) * t,
-            );
-            ctx.stroke();
-          }
-        }
-
-        function triggerRandomLightning() {
-          if (particles.length > 1) {
-            const p1 = particles[Math.floor(Math.random() * particles.length)];
-            const p2 = particles[Math.floor(Math.random() * particles.length)];
-            lightningStrikes.push(new LightningStrike(p1, p2));
-          }
-        }
-
-        function animate() {
-          // 1. Fondo con rastro para la Matrix
-          ctx.fillStyle = "rgba(5, 5, 5, 0.18)"; 
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-          // 2. Dibujamos la lluvia Matrix (ella necesita el rastro)
-          drawMatrix();
-
-          // 3. Dibujamos las partículas
-          particles.forEach((p) => {
-            p.update();
-            p.draw();
-          });
-
-          // 4. La malla se dibuja AL FINAL
-          // Esto asegura que las líneas se vean nítidas pero muy tenues
-          drawLines();
-requestAnimationFrame(animate);
-        }
-
-        canvas.addEventListener("click", (e) => {
-          const target =
-            particles[Math.floor(Math.random() * particles.length)];
-          lightningStrikes.push(
-            new LightningStrike({ x: e.clientX, y: e.clientY }, target),
-          );
-        });
-
-        window.addEventListener("resize", resize);
-        init();
         
-      </script>
+        textElement.innerHTML = phrase.substring(0, charIndex);
+        
+        // Velocidad ajustada a 65ms para mejor fluidez
+        setTimeout(typeEffect, 65);
+        
+      } else if (textElement) {
+        textElement.style.borderRight = "none";
+        textElement.style.animation = "none";
+      }
+    }
 
+    // Iniciar la animación cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', typeEffect);
+    } else {
+      setTimeout(typeEffect, 100);
+    }
+  })();
+
+  // ============================================
+  // MOTOR DE PARTÍCULAS Y MATRIX (CORREGIDO)
+  // ============================================
+  const canvas = document.getElementById("networkCanvas");
+  const ctx = canvas.getContext("2d");
+  let particles = [],
+      lightningStrikes = [],
+      isFlipped = false;
+
+  const charSet = "RESTAURANTESSPA SERVICIOSPROFESIONALESMARKETINGOPENSOURCESEOVENTASMARCANEGOCIOSOCIALMEDIACRMWEBDOMINIOREPUTACIONCODIGO0123456789ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ";
+  const fontSize = 16;
+  let columns, drops = [], speeds = [];
+  let matrixActive = false; // Variable global (tuya)
+
+  const config = {
+    particleCount: 150,
+    connectionDist: 130,
+    baseOpacity: 0.01,
+    speed: 0.5,
+    neuronColors: ["rgba(0, 255, 255,", "rgba(0, 255, 150,"],
+    meshColor: "rgba(0, 255, 150,",
+    flippedMeshColor: "rgba(0, 100, 229,",
+    flippedNeuronColor: "rgba(255, 50, 50,",
+    lightningInterval: 7000,
+  };
+
+  // --- TUS FUNCIONES ORIGINALES (sin cambios) ---
+  function initMatrix() {
+    columns = Math.floor(canvas.width / fontSize);
+    drops = [];
+    speeds = [];
+    for (let i = 0; i < columns; i++) {
+      drops[i] = Math.random() * -50;
+      speeds[i] = Math.random() * 0.6 + 0.4;
+    }
+  }
+
+  function drawMatrix() {
+    if (!matrixActive) return;
+
+    for (let i = 0; i < drops.length; i++) {
+      if (i % 2 !== 0) continue;
+
+      const text = charSet[Math.floor(Math.random() * charSet.length)];
+      let x = i * fontSize;
+      let y = drops[i] * fontSize;
+
+      if (i % 12 === 0) {
+        ctx.font = "300 " + (fontSize - 6) + "px monospace";
+        ctx.fillStyle = isFlipped ? "rgba(0, 220, 255, 0.05)" : "rgba(0, 255, 100, 0.15)";
+      } else {
+        ctx.font = "500 " + (fontSize - 2) + "px 'Inter', monospace";
+        ctx.fillStyle = isFlipped ? "rgba(0, 220, 255, 0.12)" : "rgba(0, 255, 100, 0.08)";
+      }
+
+      if (Math.random() > 0.996) {
+        ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = isFlipped ? "#00d4ff" : "#00ff78";
+      }
+
+      ctx.fillText(text, x, y);
+      ctx.shadowBlur = 0;
+
+      if (y > canvas.height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+
+      let speedMult = i % 12 === 0 ? 0.25 : 0.13;
+      drops[i] += speeds[i] * speedMult;
+    }
+  }
+
+  // --- TUS CLASES ORIGINALES ---
+  class Particle {
+    constructor() {
+      this.reset();
+      this.originalRadius = Math.random() * 1.2 + 0.5;
+    }
+    reset() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.vx = (Math.random() - 0.5) * config.speed;
+      this.vy = (Math.random() - 0.5) * config.speed;
+      this.radius = this.originalRadius;
+      this.color = config.neuronColors[Math.floor(Math.random() * config.neuronColors.length)];
+    }
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+      if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+      if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      let colorToDraw = isFlipped ? config.flippedNeuronColor : this.color;
+      let finalOpacity = isFlipped ? config.baseOpacity + 0.25 : config.baseOpacity + 0.06;
+      ctx.fillStyle = colorToDraw + finalOpacity + ")";
+      ctx.fill();
+    }
+  }
+
+  function createParticles() {
+    particles = [];
+    for (let i = 0; i < config.particleCount; i++)
+      particles.push(new Particle());
+  }
+
+  function drawLines() {
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < config.connectionDist) {
+          const opacity = (1 - dist / config.connectionDist) * config.baseOpacity;
+          ctx.beginPath();
+          ctx.strokeStyle = (isFlipped ? config.flippedMeshColor : config.meshColor) + opacity + ")";
+          ctx.lineWidth = 0.4;
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  class LightningStrike {
+    constructor(start, end) {
+      this.start = { x: start.x, y: start.y };
+      this.end = { x: end.x, y: end.y };
+      this.progress = 0;
+      this.duration = 45;
+    }
+    update() {
+      this.progress++;
+    }
+    draw() {
+      if (this.progress > this.duration) return;
+      const t = this.progress / this.duration;
+      ctx.beginPath();
+      ctx.strokeStyle = `rgba(0, 255, 255, ${Math.sin(t * Math.PI) * 0.12})`;
+      ctx.lineWidth = 0.8;
+      ctx.moveTo(this.start.x, this.start.y);
+      ctx.lineTo(
+        this.start.x + (this.end.x - this.start.x) * t,
+        this.start.y + (this.end.y - this.start.y) * t
+      );
+      ctx.stroke();
+    }
+  }
+
+  // --- FUNCIÓN DE ANIMACIÓN (CORREGIDA) ---
+  function animate() {
+    ctx.fillStyle = "rgba(5, 5, 5, 0.18)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    drawMatrix();
+    
+    particles.forEach((p) => {
+      p.update();
+      p.draw();
+    });
+
+    drawLines();
+    
+    requestAnimationFrame(animate);
+  }
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    config.particleCount = Math.floor((canvas.width * canvas.height) / 8500);
+    initMatrix();
+  }
+
+  canvas.addEventListener("click", (e) => {
+    const target = particles[Math.floor(Math.random() * particles.length)];
+    lightningStrikes.push(new LightningStrike({ x: e.clientX, y: e.clientY }, target));
+  });
+
+  window.addEventListener("resize", resize);
+
+  // --- INICIALIZACIÓN CORREGIDA ---
+  function init() {
+    resize();
+    createParticles();
+    initMatrix();
+    animate();
+    
+    // Activar Matrix después de 3 segundos
+    setTimeout(() => {
+      matrixActive = true;
+    }, 3000);
+    
+    // Flip de colores
+    setInterval(() => {
+      isFlipped = true;
+      setTimeout(() => {
+        isFlipped = false;
+      }, 3000);
+    }, 12000);
+  }
+
+  // Iniciar todo cuando el DOM esté listo
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+</script>
+      
       <script>
         (function () {
           document.addEventListener("DOMContentLoaded", function () {
