@@ -739,17 +739,19 @@ src="https://www.facebook.com/tr?id=3070185119839151&ev=PageView&noscript=1"
         }
 
         .human-avatar-circle {
-          width: 53px;
-          height: 53px;
-          border-radius: 50%;
-          border: 2px solid #fff;
-          background: #000;
-          margin-left: -18px;
-          position: relative;
-          box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-          transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-          animation: borderGlow 3s infinite;
-        }
+  width: 53px;
+  height: 53px;
+  border-radius: 50%;
+  /* Cambiamos el blanco puro por un blanco sutil o el color que prefieras */
+  border: 2px solid rgba(255, 255, 255, 0.8); 
+  background: #000;
+  margin-left: -18px;
+  position: relative;
+  /* Una sombra fija y suave, sin resplandores azules o rojos */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  /* LA LÍNEA DE ANIMACIÓN SE BORRÓ DE AQUÍ */
+}
 
         .human-avatar-circle:first-child {
           margin-left: 0;
@@ -762,17 +764,7 @@ src="https://www.facebook.com/tr?id=3070185119839151&ev=PageView&noscript=1"
           border-radius: 50%;
         }
 
-        @keyframes borderGlow {
-          0%,
-          100% {
-            border-color: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
-          }
-          50% {
-            border-color: var(--colombia-blue);
-            box-shadow: 0 0 18px rgba(0, 56, 147, 0.6);
-          }
-        }
+        
 
         .live-indicator {
           position: absolute;
