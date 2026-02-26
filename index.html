@@ -1655,26 +1655,6 @@ src="https://www.facebook.com/tr?id=3070185119839151&ev=PageView&noscript=1"
         })();
       </script>
 
-      <div class="sapien-float-box">
-        <div class="sapien-float-box">
-          <a
-            href="https://wa.me/573012800024?text=%C2%A1Hola%20Sapien!%20Deseo%20aumentar%20la%20presencia%20web%20y%20las%20ventas%20de%20mi%20negocio."
-            class="sapien-btn btn-wa"
-            target="_blank"
-            title="Chatea con nosotros"
-          >
-            <i class="fab fa-whatsapp"></i>
-          </a>
-          <button
-            id="triggerSapien"
-            class="sapien-btn btn-lead vibe-attract"
-            title="¡Empecemos ya!"
-          >
-            <i class="fas fa-rocket"></i>
-          </button>
-        </div>
-      </div>
-
       <style>
         .sap-scroll-indicator {
           position: absolute;
@@ -1774,39 +1754,7 @@ src="https://www.facebook.com/tr?id=3070185119839151&ev=PageView&noscript=1"
         </div>
       </div>
 
-      <script>
-        document.addEventListener("DOMContentLoaded", function () {
-          const popText = document.getElementById("sapien-pop-text");
-
-          function updateBubble() {
-            // 1. Insertamos el contenido solicitado
-            popText.textContent = "Clic para hablar";
-
-            // 2. Lo hacemos visible en el DOM
-            popText.style.display = "block";
-
-            // 3. Pequeño delay para que la transición de opacidad funcione
-            setTimeout(() => {
-              popText.classList.add("show");
-            }, 100);
-
-            // 4. Desaparecer después de 7 segundos de gloria
-            setTimeout(() => {
-              popText.classList.remove("show");
-              // Limpiamos el texto al terminar para asegurar que no quede rastro
-              setTimeout(() => {
-                popText.style.display = "none";
-                popText.textContent = "";
-              }, 600);
-            }, 7000);
-          }
-
-          // DISPARADOR ÚNICO: 36 segundos (36000ms)
-          // Esto garantiza que entre el segundo 0 y el 36 no salga nada.
-          setTimeout(updateBubble, 36000);
-        });
-      </script>
-
+      
       <div id="overlaySapien" class="sapien-fs-overlay">
         <div class="sapien-fs-container">
           <button
